@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1E3A5F">
+  <title>ExamWatch | Admin</title>
+  <link rel="stylesheet" href="Admin.css">
+</head>
+<body>
+  <div id="adminApp" class="admin-app hidden">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="ExamWatch admin home"><span class="brand-mark">E</span><span>ExamWatch</span></a>
+      <div class="workspace-label">TEACHER WORKSPACE</div>
+      <nav class="side-nav" aria-label="Admin navigation">
+        <button class="nav-link active" data-page="dashboard"><span class="nav-icon">01</span>Dashboard</button>
+        <button class="nav-link" data-page="monitoring"><span class="nav-icon live-icon">02</span>Live monitoring<span id="liveBadge" class="nav-badge hidden">0</span></button>
+        <button class="nav-link" data-page="assessments"><span class="nav-icon">03</span>Assessments</button>
+        <button class="nav-link" data-page="activity"><span class="nav-icon">04</span>Activity logs</button>
+        <button class="nav-link" data-page="results"><span class="nav-icon">05</span>Results</button>
+        <button class="nav-link" data-page="history"><span class="nav-icon">06</span>History</button>
+        <button class="nav-link" data-page="settings"><span class="nav-icon">07</span>Settings</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="teacher-card">
+          <div class="avatar">A</div>
+          <div><strong>Administrator</strong><span>Teacher account</span></div>
+        </div>
+        <button id="logoutButton" class="logout-button"><span aria-hidden="true">↪</span> Log out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="topbar-kicker">EXAMWATCH / ADMIN</p>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <span class="demo-pill"><span></span> Supabase connected</span>
+          <div class="topbar-avatar">A</div>
+        </div>
+      </header>
+
+      <div class="content-area">
+        <section id="page-dashboard" class="page-section">
+          <div class="welcome-banner">
+            <div>
+              <p class="eyebrow">OVERVIEW</p>
+              <h2>Good day, Teacher</h2>
+              <p>Here is what's happening with your assessments.</p>
+            </div>
+            <div class="welcome-art" aria-hidden="true"><span>✓</span></div>
+          </div>
+          <div class="stat-grid">
+            <article class="stat-card"><div class="stat-top"><span>Students monitored</span><span class="stat-symbol green-symbol">S</span></div><strong id="statStudents">0</strong><small>Unique student accounts</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Assessments taken</span><span class="stat-symbol blue-symbol">A</span></div><strong id="statTaken">0</strong><small>Completed submissions</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Live sessions</span><span class="stat-symbol live-symbol">●</span></div><strong id="statLive">0</strong><small>Currently taking an assessment</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Page alerts</span><span class="stat-symbol beige-symbol">!</span></div><strong id="statAlerts">0</strong><small>Assessment page left events</small></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel recent-panel">
+              <div class="panel-heading"><div><p class="eyebrow">LATEST SUBMISSIONS</p><h2>Recent results</h2></div><button class="text-button" data-open-page="results">View all <span aria-hidden="true">→</span></button></div>
+              <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ASSESSMENT</th><th>SCORE</th><th>SUBMITTED</th></tr></thead><tbody id="recentResultsBody"></tbody></table></div>
+            </article>
+            <article class="panel activity-panel">
+              <div class="panel-heading"><div><p class="eyebrow">STUDENT ACTIVITY</p><h2>Live activity</h2></div><span class="live-label"><i></i> LIVE</span></div>
+              <div id="dashboardLiveList" class="activity-list"></div>
+            </article>
+          </div>
+          <p id="dataStatus" class="data-notice"><strong>Database:</strong> Connecting to Supabase…</p>
+        </section>
+
+        <section id="page-monitoring" class="page-section hidden">
+          <div class="section-intro"><div><p class="eyebrow">IN-PROGRESS SESSIONS</p><h2>Live monitoring</h2><p>See active assessment sessions and alerts when the exam page is hidden or the browser window loses focus.</p></div><span class="live-label"><i></i> UPDATING LIVE</span></div>
+          <article class="panel"><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ASSESSMENT</th><th>SESSION STATUS</th><th>PAGE ALERTS</th><th>LAST UPDATE</th></tr></thead><tbody id="monitoringBody"></tbody></table></div></article>
+          <p class="data-notice"><strong>Monitoring limitation:</strong> when the browser reports that the exam page is hidden or loses focus (such as when minimizing or switching windows), the student appears as away. The browser cannot confirm the exact action or identify what other page or app was opened.</p>
+        </section>
+
+        <section id="page-assessments" class="page-section hidden">
+          <div class="section-intro"><div><p class="eyebrow">ASSESSMENT LIBRARY</p><h2>Assessments</h2><p>Create, edit, open, or close student assessments.</p></div><button id="addAssessmentButton" class="button button-primary">+ New assessment</button></div>
+          <article class="panel"><div class="table-wrap"><table><thead><tr><th>ASSESSMENT</th><th>SUBJECT</th><th>QUESTIONS</th><th>DURATION</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody id="assessmentsBody"></tbody></table></div></article>
+        </section>
+
+        <section id="page-activity" class="page-section hidden">
+          <div class="section-intro"><div><p class="eyebrow">AUDIT TRAIL</p><h2>Activity logs</h2><p>Grouped by student. Open a student to review assessment starts, answers, page visibility changes, and submissions.</p></div></div>
+          <article class="panel activity-groups" id="activityBody"></article>
+        </section>
+
+        <section id="page-results" class="page-section hidden">
+          <div class="section-intro"><div><p class="eyebrow">STUDENT PERFORMANCE</p><h2>Results</h2><p>Scores from submitted assessments.</p></div></div>
+          <article class="panel"><div class="table-toolbar"><label class="search-box"><span aria-hidden="true">⌕</span><input id="resultSearch" type="search" placeholder="Search student, assessment, or subject" aria-label="Search results"></label><div class="results-toolbar-actions"><span id="resultsCount" class="result-count"></span><button id="exportResultsButton" class="button button-secondary" type="button" disabled>Export CSV</button></div></div><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ASSESSMENT</th><th>SCORE</th><th>PAGE ALERTS</th><th>SUBMITTED</th></tr></thead><tbody id="resultsBody"></tbody></table></div></article>
+        </section>
+
+        <section id="page-history" class="page-section hidden">
+          <div class="section-intro"><div><p class="eyebrow">ASSESSMENT RECORDS</p><h2>Assessment history</h2><p>Review each student's username and email, submitted answers, recorded activity, score, and timing.</p></div></div>
+          <article class="panel"><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ASSESSMENT</th><th>SCORE</th><th>STARTED</th><th>SUBMITTED</th><th>DURATION</th><th>DETAILS</th></tr></thead><tbody id="historyBody"></tbody></table></div></article>
+        </section>
+
+        <section id="page-settings" class="page-section hidden">
+          <div class="section-intro"><div><p class="eyebrow">PREFERENCES</p><h2>Settings</h2><p>Admin access and data storage information.</p></div></div>
+          <article class="panel settings-card"><div class="settings-icon">i</div><div><h2>Supabase accounts</h2><p>Admin and student accounts are managed by the project owner in Supabase Authentication. Admin access is controlled by the account role in the profiles table.</p><p>All assessment data shown here is loaded from Supabase with row-level security enabled.</p></div></article>
+          <article class="panel settings-card"><div class="settings-icon settings-icon-green">!</div><div><h2>Score security</h2><p>Answer keys are kept separate from student-visible assessment data, and scores are calculated by a database function after submission.</p></div></article>
+        </section>
+      </div>
+    </main>
+  </div>
+  <dialog id="assessmentDialog" class="assessment-dialog">
+    <form id="assessmentForm" method="dialog" class="assessment-form">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">ASSESSMENT EDITOR</p><h2 id="assessmentDialogTitle">New assessment</h2></div>
+        <button id="closeAssessmentDialog" class="dialog-close" type="button" aria-label="Close assessment editor">×</button>
+      </div>
+      <input id="assessmentId" type="hidden">
+      <div class="form-grid">
+        <label>Assessment title<input id="assessmentTitleInput" maxlength="120" required placeholder="e.g. Unit 1 Quiz"></label>
+        <label>Subject<input id="assessmentSubjectInput" maxlength="120" required placeholder="e.g. General Physics"></label>
+        <label>Duration in minutes<input id="assessmentDurationInput" type="number" min="1" max="240" required value="45"></label>
+        <label>Assessment format
+          <select id="assessmentTypeInput">
+            <option value="multiple_choice">Multiple-choice quiz</option>
+            <option value="image_based">Image worksheet</option>
+          </select>
+        </label>
+        <label class="open-toggle"><input id="shuffleQuestionsInput" type="checkbox"> Shuffle question order for each student</label>
+        <label class="open-toggle"><input id="assessmentOpenInput" type="checkbox" checked> Open for new students</label>
+      </div>
+      <div id="multipleChoiceEditor">
+        <div class="question-editor-heading"><div><h3>Multiple-choice questions</h3><p>Each question has four choices and one correct answer.</p></div><button id="addQuestionButton" class="button button-secondary" type="button">+ Add question</button></div>
+        <div id="questionEditorList" class="question-editor-list"></div>
+      </div>
+      <div id="imageAssessmentEditor" class="image-assessment-editor hidden">
+        <div class="form-grid">
+          <label>Image layout
+            <select id="imageLayoutInput">
+              <option value="per_question">One image per question</option>
+              <option value="worksheet">One whole worksheet image</option>
+            </select>
+          </label>
+        </div>
+        <p class="form-help">Students may type answers for automatic exact-match grading, or upload a photo of their work for teacher review. Images must be JPG, PNG, or WebP (up to 10 MB each).</p>
+        <div class="question-editor-heading"><div><h3 id="imageQuestionHeading">Image questions</h3><p id="imageQuestionHelp">Add an expected typed answer for each image.</p></div><button id="addImageQuestionButton" class="button button-secondary" type="button">+ Add image</button></div>
+        <div id="imageQuestionEditorList" class="question-editor-list"></div>
+      </div>
+      <p id="assessmentFormError" class="form-error hidden" role="alert"></p>
+      <div class="dialog-actions"><button id="cancelAssessmentButton" class="button button-secondary" type="button">Cancel</button><button id="saveAssessmentButton" class="button button-primary" type="submit">Save assessment</button></div>
+    </form>
+  </dialog>
+  <dialog id="assessmentPreviewDialog" class="history-dialog assessment-preview-dialog">
+    <div class="history-dialog-content">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">STUDENT PREVIEW</p><h2 id="assessmentPreviewTitle">Assessment preview</h2></div>
+        <button id="closeAssessmentPreview" class="dialog-close" type="button" aria-label="Close assessment preview">×</button>
+      </div>
+      <p id="assessmentPreviewMeta" class="assessment-preview-meta"></p>
+      <div id="assessmentPreviewQuestions" class="assessment-preview-questions"></div>
+    </div>
+  </dialog>
+  <dialog id="historyDialog" class="history-dialog">
+    <div class="history-dialog-content">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">ATTEMPT DETAILS</p><h2 id="historyDialogTitle">Assessment attempt</h2></div>
+        <button id="closeHistoryDialog" class="dialog-close" type="button" aria-label="Close assessment history">×</button>
+      </div>
+      <div id="historyDialogBody" class="history-detail-body"></div>
+    </div>
+  </dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../supabase-config.js"></script>
+  <script src="Admin.js"></script>
+</body>
+</html>
