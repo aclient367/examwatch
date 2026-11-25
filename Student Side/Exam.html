@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExamWatch | Student Exam</title>
+  <link rel="stylesheet" href="Exam.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">ExamWatch</div>
+    <div class="user">
+      <div class="student-identity">
+        <strong id="studentUsername">Student</strong>
+        <span id="studentEmail">Student email</span>
+      </div>
+      <button id="scoreHistoryBtn" class="score-history-top-btn" type="button">
+        <span class="score-history-full-label">My score history</span>
+        <span class="score-history-mobile-label">Scores</span>
+      </button>
+      <button id="editUsernameBtn" class="edit-username" type="button">Edit username</button>
+      <button id="logoutBtn" class="logout">Logout</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- SIDEBAR: SUBJECTS -->
+    <aside class="sidebar">
+      <h3 class="side-title">SUBJECTS</h3>
+      <ul id="subjectList" class="subject-list"></ul>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <section id="assessmentPanel" class="assessment-panel">
+        <div id="assessmentNotifications" class="assessment-notifications hidden" role="status" aria-live="polite"></div>
+        <div class="assessment-heading">
+          <p class="eyebrow">STUDENT DASHBOARD</p>
+          <h2 id="assessmentSubject"></h2>
+          <p class="assessment-intro">Pumili ng assessment para makita ang detalye at simulan ang pagsagot.</p>
+        </div>
+
+        <div id="assessmentList" class="assessment-list"></div>
+      </section>
+
+      <section id="scoreHistoryPanel" class="assessment-panel score-history-panel hidden">
+        <div class="score-history-heading">
+          <div>
+            <p class="eyebrow">MY RESULTS</p>
+            <h2>Score history</h2>
+            <p class="assessment-intro">Makikita rito ang assessments na may score na at na-grade na.</p>
+          </div>
+          <div class="score-history-actions">
+            <button id="refreshScoreHistoryBtn" class="btn btn-ghost" type="button">Refresh</button>
+            <button id="backToAssessmentsBtn" class="btn btn-primary" type="button">Back to assessments</button>
+          </div>
+        </div>
+        <p id="scoreHistoryMessage" class="score-history-message" role="status" aria-live="polite"></p>
+        <div id="scoreHistoryList" class="score-history-list"></div>
+      </section>
+
+      <div id="examPanel" class="exam-panel hidden">
+        <div class="exam-header">
+          <h2 id="examTitle">General Physics • Online Assessment</h2>
+          <div class="timer">Time left <span id="timer">45:00</span></div>
+        </div>
+
+        <section class="question-card">
+          <div id="qNav" class="q-nav"></div>
+          <h3 id="qNumber">Question 1</h3>
+          <p id="qText" class="q-text"></p>
+          <div id="options" class="options"></div>
+        </section>
+
+        <div class="footer-row">
+          <div id="monitoringNotice" class="notice">Monitoring notice: supported browser activity is recorded.</div>
+          <div class="btns">
+            <button id="prevBtn" class="btn btn-ghost">← Back</button>
+            <button id="nextBtn" class="btn btn-primary">Next →</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- RESULT MODAL -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-box">
+      <h3 id="modalTitle">Exam submitted</h3>
+      <p id="modalText"></p>
+      <button id="modalClose" class="btn btn-primary">OK</button>
+    </div>
+  </div>
+
+  <dialog id="usernameDialog" class="username-dialog">
+    <form id="usernameForm">
+      <h2>Change username</h2>
+      <label for="usernameInput">Username</label>
+      <input id="usernameInput" name="username" type="text" minlength="1" maxlength="40" required autocomplete="nickname">
+      <p id="usernameMessage" role="status"></p>
+      <div class="username-actions">
+        <button id="cancelUsernameBtn" class="btn btn-ghost" type="button">Cancel</button>
+        <button id="saveUsernameBtn" class="btn btn-primary" type="submit">Save username</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../supabase-config.js"></script>
+  <script src="Exam.js"></script>
+</body>
+</html>
